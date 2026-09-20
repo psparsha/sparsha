@@ -1,40 +1,44 @@
-import streamlit as st, pickle, pandas as pd, time
+﻿import streamlit as st, pickle, pandas as pd, time
+import os
 
-st.set_page_config(layout="wide")
-st.title("🔴 LIVE Churn Monitor - Real Time")
+st.set_page_config(layout=""wide"")
+st.title(""🔴 LIVE Churn Monitor - Real Time"")
 
 @st.cache_resource
 def load():
-    with open("model.pkl","rb") as f: m=pickle.load(f)
-    with open("cols.pkl","rb") as f: c=pickle.load(f)
+    base_path = os.path.dirname(__file__)
+    with open(os.path.join(base_path, ""model.pkl""),""rb"") as f: m=pickle.load(f)
+    with open(os.path.join(base_path, ""cols.pkl""),""rb"") as f: c=pickle.load(f)
     return m,c
 
 model, cols = load()
 
-tab1, tab2 = st.tabs(["Manual Check", "📡 LIVE Real-Time Feed"])
+tab1, tab2 = st.tabs([""Manual Check"", ""🔴 LIVE Real-Time Feed""])
 
 with tab1:
-    st.header("Check One Customer")
-    tenure = st.slider("Tenure",0,72,12)
-    monthly = st.number_input("Monthly Charges",70.0)
-    contract = st.selectbox("Contract",["Month-to-month","One year","Two year"])
-    if st.button("Predict"):
-        prob = 0.78 if tenure<10 and contract=="Month-to-month" else 0.2
-        if prob>0.5: st.error(f"WILL CHURN - {prob*100}% risk")
-        else: st.success(f"WILL STAY - {100-prob*100}% safe")
+    st.header(""Check One Customer"")
+    tenure = st.slider(""Tenure"",0,72,12)
+    monthly = st.number_input(""Monthly Charges"",70.0)
+    contract = st.selectbox(""Contract"", [""Month-to-month"", ""One year"", ""Two year""])
+    if st.button(""Predict""):
+        prob = 0.78 if tenure<10 and contract==""Month-to-month"" else 0.15
+        if prob>0.5: st.error(f""WILL CHURN - {prob*100:.0f}% risk"")
+        else: st.success(f""WILL STAY - {prob*100:.0f}% safe"")
 
 with tab2:
-    st.header("Live Customers - Auto Updating")
+    st.header(""Live Customer Stream"")
+    st.caption(""Simulating real-time Kafka feed..."")
     placeholder = st.empty()
     for i in range(100):
-        df_live = pd.DataFrame({
-            'Customer ID': [f'CUST_{1000+i}', f'CUST_{1001+i}', f'CUST_{1002+i}'],
-            'Tenure': [2, 45, 5],
-            'Monthly': [89, 35, 95],
-            'Risk %': [85, 12, 78],
-            'Status': ['🔴 CHURN', '🟢 SAFE', '🔴 CHURN']
-        })
+        tenure_r = int(pd.np.random.randint(0,72)) if hasattr(pd, 'np') else __import__('random').randint(0,72)
+        import random
+        tenure_r = random.randint(0,72)
+        monthly_r = random.randint(20,120)
+        contract_r = random.choice([""Month-to-month"", ""One year"", ""Two year""])
+        prob_r = 0.82 if tenure_r<12 and contract_r==""Month-to-month"" else 0.12
         with placeholder.container():
-            st.dataframe(df_live, use_container_width=True)
-            st.warning("Alert: 2 customers need offer NOW!")
-        time.sleep(5)
+            if prob_r>0.5:
+                st.error(f""🚨 ALERT | Tenure:{tenure_r} | Monthly:\ | {contract_r} | Risk:{prob_r*100:.0f}% - ACTION NEEDED"")
+            else:
+                st.success(f""✅ OK | Tenure:{tenure_r} | Monthly:\ | {contract_r} | Safe:{(1-prob_r)*100:.0f}%"")
+            time.sleep(1.5)
