@@ -21,8 +21,8 @@ with tab1:
     contract = st.selectbox(""Contract"", [""Month-to-month"", ""One year"", ""Two year""])
     if st.button(""Predict""):
         prob = 0.78 if tenure<10 and contract==""Month-to-month"" else 0.15
-        if prob>0.5: st.error(f""WILL CHURN - {prob*100:.0f}% risk"")
-        else: st.success(f""WILL STAY - {100-prob*100:.0f}% safe"")
+        if prob>0.5: st.error(f""WILL CHURN - {prob*100:.0f} percent risk"")
+        else: st.success(f""WILL STAY - {100-prob*100:.0f} percent safe"")
 
 with tab2:
     st.header(""Live Customer Stream"")
@@ -35,7 +35,7 @@ with tab2:
         prob_r = 0.82 if tenure_r<12 and contract_r==""Month-to-month"" else 0.12
         with placeholder.container():
             if prob_r>0.5:
-                st.error(f""ALERT | Tenure:{tenure_r} | Monthly:{monthly_r} | {contract_r} | Risk:{prob_r*100:.0f}% - ACTION NEEDED"")
+                st.error(f""ALERT | Tenure:{tenure_r} | Monthly:{monthly_r} | {contract_r} | Risk:{prob_r*100:.0f} percent - ACTION NEEDED"")
             else:
-                st.success(f""OK | Tenure:{tenure_r} | Monthly:{monthly_r} | {contract_r} | Safe:{(1-prob_r)*100:.0f}%"")
+                st.success(f""OK | Tenure:{tenure_r} | Monthly:{monthly_r} | {contract_r} | Safe:{(1-prob_r)*100:.0f}percent"")
             time.sleep(1.5)
